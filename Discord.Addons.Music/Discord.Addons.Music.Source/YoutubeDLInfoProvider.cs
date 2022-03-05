@@ -1,0 +1,26 @@
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+
+namespace Discord.Addons.Music.Source
+{
+
+	public class YoutubeDLInfoProvider
+	{
+		public static async Task<JObject> ExtractInfo (string query, bool isUrl = true)
+		{
+			string arguments = " --dump-single-json  ytsearch:" + query;
+			if (isUrl)
+			{
+				arguments = " --dump-single-json  " + query;
+			}
+			Process ytdlProcess = Process.Start(new ProcessStartInfo
+			{
+				FileName = "youtube-dl",
+				Arguments = arguments,
+				RedirectStandardOutput = true
+			});
+			return JObject.Parse(await ytdlProcess.StandardOutput.ReadToEndAsync());
+		}
+	}
+}
